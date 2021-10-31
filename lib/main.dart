@@ -89,33 +89,48 @@ class ByteBankTextField extends StatelessWidget {
   }
 }
 
-class TransferList extends StatelessWidget {
-  const TransferList({
+class TransferList extends StatefulWidget {
+  final List<TransferModel> _transfers = [];
+
+  TransferList({
     Key? key,
   }) : super(key: key);
 
   @override
+  _TransferListState createState() => _TransferListState();
+}
+
+class _TransferListState extends State<TransferList> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          TransferItem(
+      body: ListView.builder(
+        itemCount: widget._transfers.length,
+        itemBuilder: (context, index) {
+          final _transfer = widget._transfers[index];
+
+          return TransferItem(
             TransferModel(
-              value: 200,
-              accountNumber: 1230,
+              value: _transfer?.value ?? 0,
+              accountNumber: _transfer?.accountNumber ?? 0,
             ),
-          ),
-        ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          final Future<TransferModel?> future =
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return TransferForm();
-          }));
+          final Future<TransferModel?> future = Navigator.push(
+              context, MaterialPageRoute(builder: (context) => TransferForm()));
 
-          future.then((transfer) => print('$transfer'));
+          future.then((transfer) {
+            print('$transfer');
+            setState(() {
+              if(transfer != null) {
+                widget._transfers.add(transfer);
+              }
+            });
+          });
         },
       ),
       appBar: AppBar(
