@@ -39,20 +39,20 @@ class TransferForm extends StatelessWidget {
           ),
           ElevatedButton(
             child: Text('Confirm'),
-            onPressed: () => _createTransfer(),
+            onPressed: () => _createTransfer(context),
           ),
         ],
       ),
     );
   }
 
-  void _createTransfer() {
+  void _createTransfer(BuildContext context) {
     final transfer = TransferModel(
       value: double.parse(_controllerValue.text),
       accountNumber: int.parse(_controllerAccountNumber.text),
     );
 
-    print('$transfer');
+    Navigator.pop(context, transfer);
   }
 }
 
@@ -110,9 +110,12 @@ class TransferList extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          final Future<TransferModel?> future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
             return TransferForm();
           }));
+
+          future.then((transfer) => print('$transfer'));
         },
       ),
       appBar: AppBar(
