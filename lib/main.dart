@@ -6,9 +6,20 @@ class BytebankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: TransferList(),
+      theme: ThemeData(
+        primaryColor: Colors.green[900],
+        accentColor: Colors.blueAccent[700],
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.green,
+        ).copyWith(
+          primary: Colors.green[900],
+          secondary: Colors.blueAccent[700],
+        ),
+        buttonTheme: ButtonThemeData(
+            buttonColor: Colors.blueAccent[700],
+            textTheme: ButtonTextTheme.primary),
       ),
+      home: TransferList(),
     );
   }
 }
@@ -132,7 +143,7 @@ class _TransferListState extends State<TransferList> {
           future.then((transfer) {
             print('$transfer');
             setState(() {
-              if(transfer != null) {
+              if (transfer != null) {
                 widget._transfers.add(transfer);
               }
             });
