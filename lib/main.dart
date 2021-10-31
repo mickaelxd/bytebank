@@ -13,9 +13,15 @@ class BytebankApp extends StatelessWidget {
   }
 }
 
-class TransferForm extends StatelessWidget {
+class TransferForm extends StatefulWidget {
+  @override
+  _TransferFormState createState() => _TransferFormState();
+}
+
+class _TransferFormState extends State<TransferForm> {
   final TextEditingController _controllerAccountNumber =
       TextEditingController();
+
   final TextEditingController _controllerValue = TextEditingController();
 
   @override
@@ -111,8 +117,8 @@ class _TransferListState extends State<TransferList> {
 
           return TransferItem(
             TransferModel(
-              value: _transfer?.value ?? 0,
-              accountNumber: _transfer?.accountNumber ?? 0,
+              value: _transfer.value,
+              accountNumber: _transfer.accountNumber,
             ),
           );
         },
