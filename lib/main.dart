@@ -47,8 +47,12 @@ class TransferForm extends StatelessWidget {
   }
 
   void _createTransfer() {
-    print(_controllerAccountNumber.text);
-    print(_controllerValue.text);
+    final transfer = TransferModel(
+      value: double.parse(_controllerValue.text),
+      accountNumber: int.parse(_controllerAccountNumber.text),
+    );
+
+    print('$transfer');
   }
 }
 
@@ -96,8 +100,10 @@ class TransferList extends StatelessWidget {
       body: ListView(
         children: [
           TransferItem(
-            value: '200',
-            accountNumber: '1230-3',
+            TransferModel(
+              value: 200,
+              accountNumber: 1230,
+            ),
           ),
         ],
       ),
@@ -117,23 +123,30 @@ class TransferList extends StatelessWidget {
 }
 
 class TransferItem extends StatelessWidget {
-  final String value;
-  final String accountNumber;
+  final TransferModel _transfer;
 
-  TransferItem({
-    required this.value,
-    required this.accountNumber,
-    Key? key,
-  }) : super(key: key);
+  TransferItem(this._transfer);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
         leading: Icon(Icons.monetization_on),
-        title: Text('R\$ $value,00'),
-        subtitle: Text(accountNumber),
+        title: Text(_transfer.value.toString()),
+        subtitle: Text(_transfer.accountNumber.toString()),
       ),
     );
+  }
+}
+
+class TransferModel {
+  final double value;
+  final int accountNumber;
+
+  TransferModel({required this.value, required this.accountNumber});
+
+  @override
+  String toString() {
+    return 'Transferencia{valor: $value, numeroConta: $accountNumber}';
   }
 }
