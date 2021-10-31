@@ -7,16 +7,16 @@ class BytebankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: TransferForm(),
+        body: TransferList(),
       ),
     );
   }
 }
 
 class TransferForm extends StatelessWidget {
-  
-final TextEditingController _controllerAccountNumber = TextEditingController();
-final TextEditingController _controllerValue = TextEditingController();
+  final TextEditingController _controllerAccountNumber =
+      TextEditingController();
+  final TextEditingController _controllerValue = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -26,43 +26,60 @@ final TextEditingController _controllerValue = TextEditingController();
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controllerAccountNumber,
-              style: TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: InputDecoration(
-                labelText: 'Account Number',
-                hintText: '0000',
-              ),
-              keyboardType: TextInputType.number,
-            ),
+          ByteBankTextField(
+            controller: _controllerAccountNumber,
+            labelText: 'Account Number',
+            hintText: '0000',
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controllerValue,
-              style: TextStyle(
-                fontSize: 24.0,
-              ),
-              decoration: InputDecoration(
-                icon: Icon(Icons.monetization_on),
-                labelText: 'Value',
-                hintText: '0.00',
-              ),
-              keyboardType: TextInputType.number,
-            ),
+          ByteBankTextField(
+            controller: _controllerValue,
+            labelText: 'Value',
+            hintText: '0.00',
+            customIcon: Icons.monetization_on,
           ),
           ElevatedButton(
             child: Text('Confirm'),
-            onPressed: () {
-              print(_controllerAccountNumber.text);
-              print(_controllerValue.text);
-            },
+            onPressed: () => _createTransfer(),
           ),
         ],
+      ),
+    );
+  }
+
+  void _createTransfer() {
+    print(_controllerAccountNumber.text);
+    print(_controllerValue.text);
+  }
+}
+
+class ByteBankTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final String hintText;
+  final IconData? customIcon;
+
+  ByteBankTextField({
+    required this.labelText,
+    required this.hintText,
+    required this.controller,
+    this.customIcon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(
+          fontSize: 24.0,
+        ),
+        decoration: InputDecoration(
+          icon: customIcon != null ? Icon(customIcon) : null,
+          labelText: labelText,
+          hintText: hintText,
+        ),
+        keyboardType: TextInputType.number,
       ),
     );
   }
@@ -86,7 +103,11 @@ class TransferList extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return TransferForm();
+          }));
+        },
       ),
       appBar: AppBar(
         title: Text('Transfers'),
@@ -96,8 +117,8 @@ class TransferList extends StatelessWidget {
 }
 
 class TransferItem extends StatelessWidget {
-  String value;
-  String accountNumber;
+  final String value;
+  final String accountNumber;
 
   TransferItem({
     required this.value,
