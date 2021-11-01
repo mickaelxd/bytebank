@@ -1,5 +1,5 @@
 import 'package:bytebank/components/byte_bank_text_field.dart';
-import 'package:bytebank/database/app_database.dart';
+import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +13,8 @@ class _ContactsFormState extends State<ContactsForm> {
       TextEditingController();
 
   final TextEditingController _controllername = TextEditingController();
+
+  final ContactsDao _dao = ContactsDao();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,6 @@ class _ContactsFormState extends State<ContactsForm> {
       accountNumber: int.parse(_controllerAccountNumber.text),
     );
 
-    save(contact).then((id) => Navigator.pop(context));
+    _dao.save(contact).then((id) => Navigator.pop(context));
   }
 }
