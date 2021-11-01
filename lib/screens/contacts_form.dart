@@ -11,7 +11,7 @@ class _ContactsFormState extends State<ContactsForm> {
   final TextEditingController _controllerAccountNumber =
       TextEditingController();
 
-  final TextEditingController _controllerFullName = TextEditingController();
+  final TextEditingController _controllername = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _ContactsFormState extends State<ContactsForm> {
         child: Column(
           children: [
             ByteBankTextField(
-              controller: _controllerFullName,
+              controller: _controllername,
               labelText: 'Full Name',
               hintText: '...',
             ),
@@ -55,7 +55,7 @@ class _ContactsFormState extends State<ContactsForm> {
 
   void _createContact(BuildContext context) {
     final contact = ContactModel(
-      fullName: _controllerFullName.text,
+      name: _controllername.text,
       accountNumber: int.parse(_controllerAccountNumber.text),
     );
 

@@ -37,7 +37,7 @@ class _ContactsListState extends State<ContactsList> {
 
           return ContactItem(
             ContactModel(
-              fullName: _contact.fullName,
+              name: _contact.name,
               accountNumber: _contact.accountNumber,
             ),
           );

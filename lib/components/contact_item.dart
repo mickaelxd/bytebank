@@ -11,7 +11,7 @@ class ContactItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(
-          _contact.fullName.toString(),
+          _contact.name.toString(),
         ),
         subtitle: Text(
           _contact.accountNumber.toString(),
