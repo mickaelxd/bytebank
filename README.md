@@ -33,8 +33,9 @@
 ## Funcionalidades
 <div id="features">
   <ul>
-    <li>Listar Cards.</li>
-    <li>Adicionar Cards.</li>
+    <li>Dashboard.</li>
+    <li>Listar Contatos.</li>
+    <li>Adicionar Contatos.</li>
   </ul>
 </div>
 
