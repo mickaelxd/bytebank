@@ -1,11 +1,10 @@
 import 'package:bytebank/components/contact_item.dart';
+import 'package:bytebank/database/app_database.dart';
 import 'package:bytebank/models/contact_model.dart';
 import 'package:bytebank/screens/contacts_form.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatefulWidget {
-  final List<ContactModel> _contacts = [];
-
   ContactsList({
     Key? key,
   }) : super(key: key);
@@ -24,33 +23,54 @@ class _ContactsListState extends State<ContactsList> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ContactsForm()),
-          ).then((contact) => _updateList(contact));
+          ).then((value) {
+            setState(() {});
+          });
         },
       ),
       appBar: AppBar(
         title: Text('Contacts'),
       ),
-      body: ListView.builder(
-        itemCount: widget._contacts.length,
-        itemBuilder: (context, index) {
-          final _contact = widget._contacts[index];
+      body: FutureBuilder<List<ContactModel>>(
+        initialData: [],
+        future: findAll(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.active:
+              break;
+            case ConnectionState.done:
+              final _contacts = snapshot.data;
 
-          return ContactItem(
-            ContactModel(
-              name: _contact.name,
-              accountNumber: _contact.accountNumber,
-            ),
-          );
+              if (_contacts!.isEmpty) {
+                return Center(
+                  child: Text('No contacts found'),
+                );
+              }
+
+              return ListView.builder(
+                itemCount: _contacts.length,
+                itemBuilder: (context, index) {
+                  final _contact = _contacts[index];
+
+                  return ContactItem(
+                    ContactModel(
+                      name: _contact.name,
+                      accountNumber: _contact.accountNumber,
+                    ),
+                  );
+                },
+              );
+          }
+
+          return Container();
         },
       ),
     );
-  }
-
-  void _updateList(ContactModel? contact) {
-    if (contact != null) {
-      setState(() {
-        widget._contacts.add(contact);
-      });
-    }
   }
 }
