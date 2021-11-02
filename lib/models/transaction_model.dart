@@ -4,10 +4,10 @@ class TransactionModel {
   final double value;
   final ContactModel contact;
 
-  TransactionModel(
-    this.value,
-    this.contact,
-  );
+  TransactionModel({
+    required this.value,
+    required this.contact,
+  });
 
   @override
   String toString() {
