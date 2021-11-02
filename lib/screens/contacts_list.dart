@@ -30,7 +30,7 @@ class _ContactsListState extends State<ContactsList> {
         },
       ),
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: Text('Transfer'),
       ),
       body: FutureBuilder<List<ContactModel>>(
         initialData: [],
