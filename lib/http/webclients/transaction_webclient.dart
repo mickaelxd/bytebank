@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bytebank/http/webclient.dart';
-import 'package:bytebank/models/contact_model.dart';
 import 'package:bytebank/models/transaction_model.dart';
 import 'package:http/http.dart';
 
@@ -12,7 +11,11 @@ class TransactionWebClient {
           .get(Uri.parse('$baseUrl/transactions'))
           .timeout(Duration(seconds: 15));
 
-      List<TransactionModel> transactions = _toTransactions(response);
+      final List<dynamic> transactionsJson = jsonDecode(response.body);
+
+      List<TransactionModel> transactions = transactionsJson.map((transaction) {
+        return TransactionModel.fromJson(transaction);
+      }).toList();
 
       return transactions;
     } on Exception catch (e) {
@@ -35,22 +38,10 @@ class TransactionWebClient {
       );
 
       Map<String, dynamic> transactionMap = jsonDecode(response.body);
-
       return TransactionModel.fromJson(transactionMap);
     } on Exception catch (e) {
       print(e);
       return null;
     }
-  }
-
-  List<TransactionModel> _toTransactions(Response response) {
-    final List<dynamic> decodedJson = jsonDecode(response.body);
-
-    final List<TransactionModel> transactions = [];
-
-    for (Map<String, dynamic> transactionJson in decodedJson) {
-      transactions.add(TransactionModel.fromJson(transactionJson));
-    }
-    return transactions;
   }
 }
