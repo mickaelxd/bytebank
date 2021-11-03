@@ -23,9 +23,7 @@ class TransactionWebClient {
 
   Future<TransactionModel?> save(TransactionModel transaction) async {
     try {
-      Map<String, dynamic> transactionMap = _toMap(transaction);
-
-      final transactionJson = jsonEncode(transactionMap);
+      final transactionJson = jsonEncode(transaction.toJson());
 
       final Response response = await client.post(
         Uri.parse('$baseUrl/transactions'),
@@ -36,53 +34,22 @@ class TransactionWebClient {
         },
       );
 
-      Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+      Map<String, dynamic> transactionMap = jsonDecode(response.body);
 
-      final transactionResponse = TransactionModel(
-        value: decodedResponse['value'],
-        contact: ContactModel(
-          id: 0,
-          name: decodedResponse['contact']['name'],
-          accountNumber: decodedResponse['contact']['accountNumber'],
-        ),
-      );
-
-      return transactionResponse;
+      return TransactionModel.fromJson(transactionMap);
     } on Exception catch (e) {
       print(e);
       return null;
     }
   }
 
-  Map<String, dynamic> _toMap(TransactionModel transaction) {
-    final Map<String, dynamic> transactionMap = {
-      'value': transaction.value,
-      'contact': {
-        'name': transaction.contact.name,
-        'accountNumber': transaction.contact.accountNumber,
-      },
-    };
-    return transactionMap;
-  }
-
   List<TransactionModel> _toTransactions(Response response) {
-    final List<dynamic> decodedResponse = jsonDecode(response.body);
+    final List<dynamic> decodedJson = jsonDecode(response.body);
 
     final List<TransactionModel> transactions = [];
 
-    for (Map<String, dynamic> transactionMap in decodedResponse) {
-      final Map<String, dynamic> contactMap = transactionMap['contact'];
-
-      final transaction = TransactionModel(
-        value: transactionMap['value'],
-        contact: ContactModel(
-          id: 0,
-          name: contactMap['name'],
-          accountNumber: contactMap['accountNumber'],
-        ),
-      );
-
-      transactions.add(transaction);
+    for (Map<String, dynamic> transactionJson in decodedJson) {
+      transactions.add(TransactionModel.fromJson(transactionJson));
     }
     return transactions;
   }
