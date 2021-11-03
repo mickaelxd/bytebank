@@ -36,6 +36,10 @@
     <li>Dashboard.</li>
     <li>Listar Contatos.</li>
     <li>Adicionar Contatos.</li>
+	  
+	  
+	  <li>Listar Transições.</li>
+    <li>Adicionar Nova Transição.</li>
   </ul>
 </div>
 
