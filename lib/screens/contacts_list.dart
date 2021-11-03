@@ -1,7 +1,9 @@
+import 'package:bytebank/components/centered_message.dart';
 import 'package:bytebank/components/contact_item.dart';
 import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
 import 'package:bytebank/screens/contacts_form.dart';
+import 'package:bytebank/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 class ContactsList extends StatefulWidget {
@@ -48,9 +50,10 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.done:
               final _contacts = snapshot.data;
 
-              if (_contacts!.isEmpty) {
-                return Center(
-                  child: Text('No contacts found'),
+              if (_contacts == null || _contacts.isEmpty) {
+                return CenteredMessage(
+                  message: 'No contacts found',
+                  icon: Icons.warning,
                 );
               }
 
@@ -60,7 +63,16 @@ class _ContactsListState extends State<ContactsList> {
                   final _contact = _contacts[index];
 
                   return ContactItem(
-                    ContactModel(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionForm(
+                            contact: _contact,
+                          ),
+                        ),
+                      );
+                    },
+                    contact: ContactModel(
                       name: _contact.name,
                       accountNumber: _contact.accountNumber,
                     ),
@@ -69,7 +81,7 @@ class _ContactsListState extends State<ContactsList> {
               );
           }
 
-          return Container();
+          return CenteredMessage(message: 'Unknown Error');
         },
       ),
     );

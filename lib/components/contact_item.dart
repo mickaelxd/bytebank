@@ -2,19 +2,24 @@ import 'package:bytebank/models/contact_model.dart';
 import 'package:flutter/material.dart';
 
 class ContactItem extends StatelessWidget {
-  final ContactModel _contact;
+  final ContactModel contact;
+  final void Function()? onTap;
 
-  ContactItem(this._contact);
+  ContactItem({
+    required this.contact,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: onTap,
         title: Text(
-          _contact.name.toString(),
+          contact.name.toString(),
         ),
         subtitle: Text(
-          _contact.accountNumber.toString(),
+          contact.accountNumber.toString(),
         ),
       ),
     );

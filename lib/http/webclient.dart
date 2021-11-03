@@ -7,6 +7,10 @@ import 'package:http_interceptor/http_interceptor.dart';
 
 const baseUrl = 'http://192.168.0.126:8080';
 
+Client client = InterceptedClient.build(
+  interceptors: [LoggingInterceptor()],
+);
+
 class LoggingInterceptor implements InterceptorContract {
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
@@ -31,10 +35,6 @@ class LoggingInterceptor implements InterceptorContract {
 
 Future<List<TransactionModel>> findAll() async {
   try {
-    Client client = InterceptedClient.build(
-      interceptors: [LoggingInterceptor()],
-    );
-
     final Response response = await client
         .get(Uri.parse('$baseUrl/transactions'))
         .timeout(Duration(seconds: 15));
@@ -62,5 +62,44 @@ Future<List<TransactionModel>> findAll() async {
   } on Exception catch (e) {
     print(e);
     return [];
+  }
+}
+
+Future<TransactionModel?> save(TransactionModel transaction) async {
+  try {
+    final Map<String, dynamic> transactionMap = {
+      'value': transaction.value,
+      'contact': {
+        'name': transaction.contact.name,
+        'accountNumber': transaction.contact.accountNumber,
+      },
+    };
+
+    final transactionJson = jsonEncode(transactionMap);
+
+    final Response response = await client.post(
+      Uri.parse('$baseUrl/transactions'),
+      body: transactionJson,
+      headers: {
+        'Content-type': 'application/json',
+        'password': '1000',
+      },
+    );
+
+    Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+    final transactionResponse = TransactionModel(
+      value: decodedResponse['value'],
+      contact: ContactModel(
+        id: 0,
+        name: decodedResponse['contact']['name'],
+        accountNumber: decodedResponse['contact']['accountNumber'],
+      ),
+    );
+
+    return transactionResponse;
+  } on Exception catch (e) {
+    print(e);
+    return null;
   }
 }
