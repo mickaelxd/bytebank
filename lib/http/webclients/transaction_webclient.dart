@@ -24,24 +24,32 @@ class TransactionWebClient {
     }
   }
 
-  Future<TransactionModel?> save(TransactionModel transaction) async {
-    try {
-      final transactionJson = jsonEncode(transaction.toJson());
+  Future<TransactionModel> save(
+    TransactionModel transaction,
+    String password,
+  ) async {
+    final transactionJson = jsonEncode(transaction.toJson());
 
-      final Response response = await client.post(
-        Uri.parse('$baseUrl/transactions'),
-        body: transactionJson,
-        headers: {
-          'Content-type': 'application/json',
-          'password': '1000',
-        },
-      );
+    final Response response = await client.post(
+      Uri.parse('$baseUrl/transactions'),
+      body: transactionJson,
+      headers: {
+        'Content-type': 'application/json',
+        'password': password,
+      },
+    );
 
-      Map<String, dynamic> transactionMap = jsonDecode(response.body);
-      return TransactionModel.fromJson(transactionMap);
-    } on Exception catch (e) {
-      print(e);
-      return null;
+    switch (response.statusCode) {
+      case 200:
+        return TransactionModel.fromJson(jsonDecode(response.body));
+      case 400:
+        throw Exception('There was an error submitting transaction');
+      case 403:
+        throw Exception('Authentication failed!');
+      case 500:
+        throw Exception('Unknown Error');
+      default:
+        throw Exception('Unknown Error');
     }
   }
 }
