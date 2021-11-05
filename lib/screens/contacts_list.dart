@@ -1,5 +1,6 @@
 import 'package:bytebank/components/centered_message.dart';
 import 'package:bytebank/components/contact_item.dart';
+import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/database/dao/contacts_dao.dart';
 import 'package:bytebank/models/contact_model.dart';
 import 'package:bytebank/screens/contacts_form.dart';
@@ -42,9 +43,7 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+              return Progress();
             case ConnectionState.active:
               break;
             case ConnectionState.done:
@@ -87,3 +86,4 @@ class _ContactsListState extends State<ContactsList> {
     );
   }
 }
+

@@ -41,16 +41,23 @@ class TransactionWebClient {
     );
 
     if (response.statusCode != 200) {
-      throw HttpException(
-        statusCodeResponses[response.statusCode] ?? 'Unknown Error',
-      );
+      throw HttpException(_getMessage(response.statusCode));
     }
 
     return TransactionModel.fromJson(jsonDecode(response.body));
   }
 
-  Map<int, String> statusCodeResponses = {
+  String _getMessage(int statusCode) {
+    if (_statusCodeResponses.containsKey(statusCode)) {
+      return _statusCodeResponses[statusCode] ?? 'Unknown Error';
+    }
+
+    return 'Unknown Error';
+  }
+
+  Map<int, String> _statusCodeResponses = {
     400: 'There was an error submitting transaction',
     401: 'Authentication failed',
+    409: 'Transaction already exists',
   };
 }
