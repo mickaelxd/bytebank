@@ -6,4 +6,5 @@ const baseUrl = 'http://192.168.0.126:8080';
 
 Client client = InterceptedClient.build(
   interceptors: [LoggingInterceptor()],
+  requestTimeout: Duration(seconds: 15),
 );

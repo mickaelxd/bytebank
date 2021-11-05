@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bytebank/http/webclient.dart';
 import 'package:bytebank/models/transaction_model.dart';
@@ -7,9 +8,9 @@ import 'package:http/http.dart';
 class TransactionWebClient {
   Future<List<TransactionModel>> findAll() async {
     try {
-      final Response response = await client
-          .get(Uri.parse('$baseUrl/transactions'))
-          .timeout(Duration(seconds: 15));
+      final Response response = await client.get(
+        Uri.parse('$baseUrl/transactions'),
+      );
 
       final List<dynamic> transactionsJson = jsonDecode(response.body);
 
@@ -39,17 +40,17 @@ class TransactionWebClient {
       },
     );
 
-    switch (response.statusCode) {
-      case 200:
-        return TransactionModel.fromJson(jsonDecode(response.body));
-      case 400:
-        throw Exception('There was an error submitting transaction');
-      case 403:
-        throw Exception('Authentication failed!');
-      case 500:
-        throw Exception('Unknown Error');
-      default:
-        throw Exception('Unknown Error');
+    if (response.statusCode != 200) {
+      throw HttpException(
+        statusCodeResponses[response.statusCode] ?? 'Unknown Error',
+      );
     }
+
+    return TransactionModel.fromJson(jsonDecode(response.body));
   }
+
+  Map<int, String> statusCodeResponses = {
+    400: 'There was an error submitting transaction',
+    401: 'Authentication failed',
+  };
 }
